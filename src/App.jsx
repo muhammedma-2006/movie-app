@@ -62,7 +62,7 @@ const App = () => {
                 {loading ? (
                     <p>Loading movies...</p>
                 ) : errorMessage ? (
-                    <p>{errorMessage}</p>
+                    <p className='text-red-500'>{errorMessage}</p>
                 ) : (
                     <ul>
                         {moviesList.map((movie) => (
