@@ -33,7 +33,7 @@ const App = () => {
             if (data.response === 'False') {
                 setErrorMessage(data.error || 'No movies found');
                 setMoviesList([]);
-                return;
+                return
             }
             setMoviesList(data.results || []);
            
