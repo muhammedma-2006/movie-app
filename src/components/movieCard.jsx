@@ -1,4 +1,4 @@
-import React from "react";
+
 
 const MovieCard = ({ movie: { title, poster_path, release_date, vote_average ,original_language} }) => {
     return(
