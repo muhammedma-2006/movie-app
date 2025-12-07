@@ -64,9 +64,12 @@ const App = () => {
                 ) : errorMessage ? (
                     <p>{errorMessage}</p>
                 ) : (
-                    moviesList.map((movie) => (
+                    <ul>
+                        {moviesList.map((movie) => (
                         <p key={movie.id} className='text-white'>{movie.title}</p>
-                    ))
+                        ))}
+                    </ul>
+                   
                 )
                 }
             </section>
