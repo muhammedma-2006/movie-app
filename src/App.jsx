@@ -14,7 +14,7 @@ const API_OPTIONS ={
 const App = () => {
     const [searchItem, setSearchItem] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [movies, setMovies] = useState([]);
+    const [moviesList, setMoviesList] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const fetchMovies = async () => {
@@ -29,10 +29,10 @@ const App = () => {
             }
             if (data.response === 'False') {
                 setErrorMessage(data.error || 'No movies found');
-                setMovies([]);
+                setMoviesList([]);
                 return
             }
-            setMovies(data.results);
+            setMoviesList(data.results);
            
         } catch (error) {
             console.error('Error fetching movies:', error);
@@ -64,9 +64,9 @@ const App = () => {
                 ) : errorMessage ? (
                     <p>{errorMessage}</p>
                 ) : (
-                    {movies.map((movie) => (
-                        <p className='text-white'>{movie.title}</p>
-                    )}
+                    moviesList.map((movie) => (
+                        <p key={movie.id} className='text-white'>{movie.title}</p>
+                    ))
                 )
                 }
             </section>
