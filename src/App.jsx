@@ -2,6 +2,10 @@ import {useEffect, useState} from 'react';
 import Search from './components/Search';
 import Spinner from './components/spinner';
 import MovieCard from './components/movieCard';
+import {useDebounce} from 'react-use';
+
+
+
 const API_BASE_URL = 'https://api.themoviedb.org/3' ;
 const API_KEY = import.meta.env.VITE_API_KEY;
 const API_OPTIONS ={
@@ -17,12 +21,21 @@ const App = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [moviesList, setMoviesList] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [debouncedSearchItem, setDebouncedSearchItem] = useState('');
 
-    const fetchMovies = async () => {
+    useDebounce(
+        () => setDebouncedSearchItem(searchItem),
+        500,
+        [searchItem]
+    );
+
+    const fetchMovies = async (query) => {
         setLoading(true);
         setErrorMessage('');
         try {
-            const endpoint =`${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+            const endpoint = query
+            ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+            :`${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
             const response = await fetch(endpoint, API_OPTIONS);
            
             
@@ -47,8 +60,9 @@ const App = () => {
     }
 
     useEffect(() => {
-        fetchMovies();
-    }, []);
+        fetchMovies(debouncedSearchItem);
+    }, [debouncedSearchItem]);
+
     return (
         <main>
             <div className='pattern'/>
@@ -58,6 +72,7 @@ const App = () => {
                     <img src="./hero-img.png" alt="hero image" />
                     <h1 className='text-white'>Find <span className='text-gradient'>Movies</span> you Love Without Hasssle</h1>
                 </header>
+                
                 <Search searchItem={searchItem} setSearchItem={setSearchItem} />
             
                 <section className='all-movies'>
