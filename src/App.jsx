@@ -3,7 +3,7 @@ import Search from './components/Search';
 import Spinner from './components/spinner';
 import MovieCard from './components/movieCard';
 import {useDebounce} from 'react-use';
-import { updateSearchCounter } from './appwrite';
+import { updateSearchCounter, getTrendingMovies } from './appwrite';
 
 
 
@@ -23,6 +23,7 @@ const App = () => {
     const [moviesList, setMoviesList] = useState([]);
     const [loading, setLoading] = useState(false);
     const [debouncedSearchItem, setDebouncedSearchItem] = useState('');
+    const [trendingMovies, setTrendingMovies] = useState([]);
 
     useDebounce(
         () => setDebouncedSearchItem(searchItem),
@@ -67,10 +68,23 @@ const App = () => {
         }
     }
 
+    const fetchTrendingMovies = async () => {
+        try{
+            const Movies = await getTrendingMovies();
+            setTrendingMovies(Movies);
+        }
+        catch (error){
+            console.error("Error fetching trending movies:", error);
+        }
+    }
+
     useEffect(() => {
         fetchMovies(debouncedSearchItem);
     }, [debouncedSearchItem]);
 
+    useEffect(() => {
+        fetchTrendingMovies();
+    }, []);
     return (
         <main>
             <div className='pattern'/>
@@ -82,7 +96,21 @@ const App = () => {
                 </header>
                 
                 <Search searchItem={searchItem} setSearchItem={setSearchItem} />
-            
+
+                {trendingMovies.length > 0 && (
+                <section className='trending'>
+                    <h2>Trending</h2>
+                    <ul>
+                        {trendingMovies.map((movie, index) => (
+                            <li key={movie.$id}>
+                                <p>{index + 1}</p>
+                                <img src={movie.poster_url} alt={movie.title} />
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+                )}
+
                 <section className='all-movies'>
                     <h2 className='mt-[40px]'>All Movies</h2>
                     {loading ? (
