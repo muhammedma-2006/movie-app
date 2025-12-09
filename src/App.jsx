@@ -18,12 +18,16 @@ const API_OPTIONS ={
 } 
 
 const App = () => {
-    const [searchItem, setSearchItem] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const [moviesList, setMoviesList] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [debouncedSearchItem, setDebouncedSearchItem] = useState('');
+    const [searchItem, setSearchItem] = useState('');
+
+    const [moviesList, setMoviesList] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
+   
     const [trendingMovies, setTrendingMovies] = useState([]);
+    const [isloadingTrending, setIsLoadingTrending] = useState(false);
+    const [errorMessageTrending, setErrorMessageTrending] = useState('');
 
     useDebounce(
         () => setDebouncedSearchItem(searchItem),
@@ -69,12 +73,18 @@ const App = () => {
     }
 
     const fetchTrendingMovies = async () => {
+        setIsLoadingTrending(true);
+        setErrorMessageTrending('');
+
         try{
             const Movies = await getTrendingMovies();
             setTrendingMovies(Movies);
         }
         catch (error){
             console.error("Error fetching trending movies:", error);
+            setErrorMessageTrending('Error fetching trending movies. Please try again later.');
+        } finally {
+            setIsLoadingTrending(false);
         }
     }
 
